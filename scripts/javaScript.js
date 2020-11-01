@@ -1,66 +1,68 @@
-// ..........plus button to increase... .......
+// ..........phone quantity increase... .......
 
-const phoneIncreaseButton = document.getElementById("phone-increase-button");
-phoneIncreaseButton.addEventListener("click", function () {
-  increaseNumber("phone-item-number", "phone-price", 1219); // 1219 per phone price
-});
+document
+  .getElementById("phone-increase-button")
+  .addEventListener("click", function () {
+    handleProductsQuantity("phone-item-number", "phone-price", 1219, true); // 1219 per phone price
+  });
 
-// ..........minus button to decrease... .......
+// ..........phone quantity decrease... .......
 
-const phoneDecreaseButton = document.getElementById("phone-decrease-button");
-phoneDecreaseButton.addEventListener("click", function () {
-  decreaseNumber("phone-item-number", "phone-price", 1219);
-});
+document
+  .getElementById("phone-decrease-button")
+  .addEventListener("click", function () {
+    handleProductsQuantity("phone-item-number", "phone-price", 1219, false);
+  });
 
-// .............case price,,,,,,,,,,,,,,
+// .............case quantity increase,,,,,,,,,,,,,,
 
-var caseIncreaseButton = document.getElementById("case-increase-button");
-caseIncreaseButton.addEventListener("click", function () {
-  increaseNumber("case-item-number", "case-price", 59); // 59 per case price
-});
+document
+  .getElementById("case-increase-button")
+  .addEventListener("click", function () {
+    handleProductsQuantity("case-item-number", "case-price", 59, true); // 59 per case price
+  });
 
-var caseDecreaseButton = document.getElementById("case-decrease-button");
-caseDecreaseButton.addEventListener("click", function () {
-  decreaseNumber("case-item-number", "case-price", 59);
-});
+// .............case quantity decrease,,,,,,,,,,,,,,
 
-var currentSubTotal = document.getElementById("sub-total").innerText;
-var subTotal = parseFloat(currentSubTotal);
+document
+  .getElementById("case-decrease-button")
+  .addEventListener("click", function () {
+    handleProductsQuantity("case-item-number", "case-price", 59, false);
+  });
 
-var currentTax = document.getElementById("tax").innerText;
-var tax = parseFloat(currentTax);
-var subFinalTotal = (subTotal * 0.05).toFixed(2); // toFixed(2) means only 2 digits will be shown after decimal
-
-var subFinalTotalNumber = parseFloat(subFinalTotal);
-document.getElementById("tax").innerText = subFinalTotal;
-var totalCurrentAmount = document.getElementById("total").innerText;
-var total = parseFloat(totalCurrentAmount);
-var totalAmount = subTotal + subFinalTotalNumber;
-
-document.getElementById("total").innerText = totalAmount;
-
-function increaseNumber(id, display, perItemPrice) {
+function handleProductsQuantity(id, display1, price, isIncrease) {
   const amount = document.getElementById(id).value;
-  const currentAmount = parseFloat(amount);
-  const totalAmount = currentAmount + 1;
-  document.getElementById(id).value = totalAmount;
-  // document.getElementById(display).innerText = perItemPrice * totalAmount;
-  var totalPrice = perItemPrice * totalAmount;
-  document.getElementById(display).innerText = totalPrice;
-  //  return totalPrice;
-}
+  const currentAmount = parseInt(amount);
 
-function decreaseNumber(id, display1, price) {
-  const amount = document.getElementById(id).value;
-  const currentAmount = parseFloat(amount);
-  const totalAmount = currentAmount - 1;
+  let totalAmount = currentAmount;
+
+  if (isIncrease == true) {
+    totalAmount = currentAmount + 1;
+  }
+  if (isIncrease == false && totalAmount > 0) {
+    // যেহেতু কমাবো তাই ০ থেকে বড় হতে হবে।
+    totalAmount = currentAmount - 1;
+  }
   document.getElementById(id).value = totalAmount;
-  // document.getElementById(display1).innerText = Price * totalAmount;
   var totalPrice1 = price * totalAmount;
   document.getElementById(display1).innerText = totalPrice1;
+  calculateSubTotal();
+}
+// ............subtotal section,,,,,,,,,,
+function calculateSubTotal() {
+  var phonePriceInput = document.getElementById("phone-price");
+  var phonePriceAmount = parseInt(phonePriceInput.innerText);
 
-  if (totalAmount === 0) {
-    alert("This number is invalid");
-  }
-  // return totalPrice1;
+  var casePriceInput = document.getElementById("case-price");
+  var casePriceAmount = parseInt(casePriceInput.innerText);
+
+  var finalSubTotal = phonePriceAmount + casePriceAmount;
+  var totalTax = (0.05 * finalSubTotal).toFixed(2);
+
+  var totalTaxAmount = parseFloat(totalTax);
+
+  document.getElementById("sub-total").innerText = finalSubTotal;
+  document.getElementById("tax").innerText = totalTax;
+
+  document.getElementById("total").innerText = finalSubTotal + totalTaxAmount;
 }
