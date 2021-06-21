@@ -1,68 +1,89 @@
-// ..........phone quantity increase... .......
+// selectors 
+let phoneDecreaseButton = document.querySelector('#phone-decrease-button')
+let phoneItemNumber = document.querySelector('#phone-item-number')
+let phoneIncreaseButton = document.querySelector('#phone-increase-button')
+let phonePrice = document.querySelector('#phone-price')
+let removePhone = document.querySelector('#remove-phone')
+let removePhoneArea = document.querySelector('#remove-phone-area');
 
-document
-  .getElementById("phone-increase-button")
-  .addEventListener("click", function () {
-    handleProductsQuantity("phone-item-number", "phone-price", 1219, true); // 1219 per phone price
-  });
+let caseDecreaseButton = document.querySelector('#case-decrease-button')
+let caseItemNumber = document.querySelector('#case-item-number')
+let caseIncreaseButton = document.querySelector('#case-increase-button')
+let casePrice = document.querySelector('#case-price')
+let removeCase = document.querySelector('#remove-case')
+let removeCaseArea = document.querySelector('#remove-case-area');
 
-// ..........phone quantity decrease... .......
+let subTotal = document.querySelector('#sub-total')
+let tax = document.querySelector('#tax')
+let total = document.querySelector('#total')
 
-document
-  .getElementById("phone-decrease-button")
-  .addEventListener("click", function () {
-    handleProductsQuantity("phone-item-number", "phone-price", 1219, false);
-  });
+//phone increase button handler
+phoneIncreaseButton.addEventListener('click', ()=>{
+    // phoneItemNumber.value = parseFloat(phoneItemNumber.value) + 1 ;
+    // phonePrice.innerText = phoneItemNumber.value * 1219; // 1219 is the price of phone
 
-// .............case quantity increase,,,,,,,,,,,,,,
+    // subTotal.innerText =  parseFloat(phonePrice.innerText) + parseFloat(casePrice.innerText) ;
+    // tax.innerText = (parseFloat(subTotal.innerText))* (5/100);
+    // tax.innerText = parseFloat(tax.innerText).toFixed(2);
+    // total.innerText = parseFloat(subTotal.innerText) + parseFloat(tax.innerText)
+    increase(phoneItemNumber, phonePrice,1219);
+    transaction(subTotal, phonePrice, casePrice, tax, total)
+})
 
-document
-  .getElementById("case-increase-button")
-  .addEventListener("click", function () {
-    handleProductsQuantity("case-item-number", "case-price", 59, true); // 59 per case price
-  });
 
-// .............case quantity decrease,,,,,,,,,,,,,,
+// phone decrease button handler
+phoneDecreaseButton.addEventListener('click', ()=>{
+    Decrease(phoneItemNumber, phonePrice,1219)
+    transaction(subTotal, phonePrice, casePrice, tax, total)
+})
 
-document
-  .getElementById("case-decrease-button")
-  .addEventListener("click", function () {
-    handleProductsQuantity("case-item-number", "case-price", 59, false);
-  });
+// case increase handler
+caseIncreaseButton.addEventListener('click', ()=>{
+    increase(caseItemNumber, casePrice,59);
+    transaction(subTotal, phonePrice, casePrice, tax, total)
+})
 
-function handleProductsQuantity(id, display1, price, isIncrease) {
-  const amount = document.getElementById(id).value;
-  const currentAmount = parseInt(amount);
+// case decrease handler
+caseDecreaseButton.addEventListener('click', ()=>{
+    Decrease(caseItemNumber, casePrice,59)
+    transaction(subTotal, phonePrice, casePrice, tax, total)
+})
 
-  let totalAmount = currentAmount;
+// remove item
+removePhone.addEventListener('click', (event)=>{
+    removePhoneArea.remove();
+})
 
-  if (isIncrease == true) {
-    totalAmount = currentAmount + 1;
-  }
-  if (isIncrease == false && totalAmount > 0) {
-    // যেহেতু কমাবো তাই ০ থেকে বড় হতে হবে।
-    totalAmount = currentAmount - 1;
-  }
-  document.getElementById(id).value = totalAmount;
-  var totalPrice1 = price * totalAmount;
-  document.getElementById(display1).innerText = totalPrice1;
-  calculateSubTotal();
+removeCase.addEventListener('click', ()=>{
+    removeCaseArea.remove();
+} )
+
+
+// created function for avoiding duplicate code
+function increase(item, price, value){
+    item.value = parseFloat(item.value) + 1 ;
+    // if (parseFloat(item.value) < 0){
+    //     alert("Negative number don't  allow here!")
+    // }
+    console.log(item.value);
+    price.innerText = item.value * value;
+
 }
-// ............subtotal section,,,,,,,,,,
-function calculateSubTotal() {
-  var phonePriceInput = document.getElementById("phone-price");
-  var phonePriceAmount = parseInt(phonePriceInput.innerText);
 
-  var casePriceInput = document.getElementById("case-price");
-  var casePriceAmount = parseInt(casePriceInput.innerText);
+function Decrease(item, price, value){
+    item.value = parseFloat(item.value) - 1 ;
+    if (parseFloat(item.value) < 0){
+        alert("Negative number don't allow here!")
+    }
+    console.log(item.value);
 
-  var finalSubTotal = phonePriceAmount + casePriceAmount;
-  var totalTax = (0.05 * finalSubTotal).toFixed(2);
+    price.innerText =  item.value * value;
+}
 
-  var totalTaxAmount = parseFloat(totalTax);
+function transaction(subTotal, phonePrice, casePrice, tax, total){
+    subTotal.innerText =  parseFloat(phonePrice.innerText) + parseFloat(casePrice.innerText) ;
+    tax.innerText = (parseFloat(subTotal.innerText))* (5/100);
+    tax.innerText = parseFloat(tax.innerText).toFixed(2);
+    total.innerText = parseFloat(subTotal.innerText) + parseFloat(tax.innerText)
 
-  document.getElementById("sub-total").innerText = finalSubTotal;
-  document.getElementById("tax").innerText = totalTax;
-
-  document.getElementById("total").innerText = finalSubTotal + totalTaxAmount;
 }
